@@ -1,6 +1,8 @@
 package com.virtualpairprogrammers.servlets;
 
 import java.io.IOException;
+
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -10,7 +12,10 @@ import com.virtualpairprogrammers.data.MenuDaoFactory;
 import com.virtualpairprogrammers.data.MenuDao;
 import com.virtualpairprogrammers.domain.Order;
 
+@WebServlet("/orderReceived.html")
 public class OrderReceivedServlet extends HttpServlet {
+	
+	private static final long serialVersionUID = -2649384163670920251L;
 	
 	MenuDao menuDao = MenuDaoFactory.getMenuDao();
 	

@@ -25,7 +25,6 @@ public class ThankYouServlet extends HttpServlet {
 
 	public void doGet (HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		
-		
 		HttpSession session = request.getSession();
 		Long orderId = (Long) session.getAttribute("orderId");
 		

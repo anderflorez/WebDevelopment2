@@ -74,7 +74,7 @@ public class MenuDao {
 
 	public List<MenuItem> find(String searchString) {
 		List<MenuItem> menuItems = null;
-		try (	Connection conn = DriverManager.getConnection("jdbc:h2:~/restaurant","","");
+		try (	Connection conn = DriverManager.getConnection("jdbc:h2:~/Documents/eclipse workspaces/WebDevelopment2/restaurant","","");
 				PreparedStatement stm = conn.prepareStatement("SELECT * FROM menuitems WHERE name LIKE ? OR description LIKE ?");
 				) {	
 

@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 import com.virtualpairprogrammers.data.MenuDao;
 import com.virtualpairprogrammers.data.MenuDaoFactory;
 import com.virtualpairprogrammers.domain.Order;
+import com.virtualpairprogrammers.websockets.KitchenDisplaySessionHandler;
+import com.virtualpairprogrammers.websockets.KitchenDisplaySessionHandlerFactory;
 
 @WebServlet("/processorder.html")
 public class ProcessOrderServlet extends HttpServlet{
@@ -22,22 +24,22 @@ public class ProcessOrderServlet extends HttpServlet{
 	private static final long serialVersionUID = -3862668044796914423L;
 
 	public void doGet (HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException { 
-	MenuDao menuDao = MenuDaoFactory.getMenuDao();
-	List<Order> orders;
-	orders = menuDao.getAllOrders();
-	request.setAttribute("orders", orders);
+		MenuDao menuDao = MenuDaoFactory.getMenuDao();
+		List<Order> orders;
+		orders = menuDao.getAllOrders();
+		request.setAttribute("orders", orders);
+		
+		List<String> statuses = new ArrayList<String>();
+		statuses.add("order accepted");
+		statuses.add("payment received");
+		statuses.add("being prepared");
+		statuses.add("ready for collection");
+		
+		request.setAttribute("statuses", statuses);
 	
-	List<String> statuses = new ArrayList<String>();
-	statuses.add("order accepted");
-	statuses.add("payment received");
-	statuses.add("being prepared");
-	statuses.add("ready for collection");
-	
-	request.setAttribute("statuses", statuses);
-
-	ServletContext context = getServletContext();
-	RequestDispatcher dispatch = context.getRequestDispatcher("/processorder.jsp");
-	dispatch.forward(request,response);
+		ServletContext context = getServletContext();
+		RequestDispatcher dispatch = context.getRequestDispatcher("/processorder.jsp");
+		dispatch.forward(request,response);
 	}
 	
 	public void doPost (HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException { 
@@ -46,6 +48,11 @@ public class ProcessOrderServlet extends HttpServlet{
 		String status =  request.getParameter("status");
 		System.out.println(id + " : " + status);
 		menuDao.updateOrderStatus(id,status);
+		
+		Order order = menuDao.getOrder(id);
+		KitchenDisplaySessionHandler handler = KitchenDisplaySessionHandlerFactory.getHandler();
+		handler.ammendOrder(order);
+		
 		doGet(request,response);
-		}
+	}
 }

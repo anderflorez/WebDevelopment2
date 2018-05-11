@@ -1,9 +1,12 @@
 package com.virtualpairprogrammers.servlets;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.List;
 
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,26 +15,20 @@ import com.virtualpairprogrammers.data.MenuDao;
 import com.virtualpairprogrammers.data.MenuDaoFactory;
 import com.virtualpairprogrammers.domain.MenuItem;
 
+@WebServlet("")
 public class ViewMenuServlet extends HttpServlet {
 
 	private static final long serialVersionUID = -1540513938731675834L;
 
-	public void service(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		PrintWriter out = response.getWriter();
-		response.setContentType("text/html");
+	public void service(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		
 		MenuDao menuDao = MenuDaoFactory.getMenuDao();
 		List<MenuItem> menuItems = menuDao.getFullMenu();
+		request.setAttribute("menuItems", menuItems);
 		
-		out.println("<html><body><h1>Ricky's Restaurant</h1>");
-		out.println("<h2>Menu</h2><ul>");
-		for (MenuItem menuItem : menuItems) {
-			out.println("<li>" + menuItem + "</li>");
-		}
-		out.println("</ul>");
-		out.println("<a href='searchResults.html?searchTerm=chicken' >View all of our chicken dishes</a>");
-		out.println("</body></html>");
-		out.close();
+		ServletContext context = getServletContext();
+		RequestDispatcher dispatcher = context.getRequestDispatcher("/menu.jsp");
+		dispatcher.forward(request, response);
 	}
 	
 }
